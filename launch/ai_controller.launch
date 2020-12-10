@@ -1,6 +1,8 @@
 <?xml version="1.0" ?>
 <launch>
-    <node ns="ai_controller" pkg="ai_controller" name="ai_controller" type="ai_controller.py" output="screen">
-      <remap from="image_raw" to="/usb_cam/image_raw" />
+    <node pkg="ai_controller" name="ai_controller" type="ai_controller.py" output="screen">
+      <!--remap from="image_raw" to="/usb_cam/image_raw" /-->
+      <!--remap from="image_raw" to="/camera/aligned_depth_to_color/image_raw" /-->
+      <!--remap from="cmd_vel" to="/robotont/cmd_vel" /-->
     </node>
 </launch>
