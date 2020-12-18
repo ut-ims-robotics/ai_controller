@@ -8,6 +8,8 @@ import cv2
 import numpy as np
 import math
 
+GUI_ENABLED = False
+
 # Create the bridge that allows us to take Image type messages and convert them to OpenCV image format
 bridge = cv_bridge.core.CvBridge()
 
@@ -98,10 +100,11 @@ def main():
                     x, y, w, h = boxes[i]
                     label = str(classes[class_ids[i]])
                     color = colors[i]
-                    cv2.rectangle(cv_image, (x, y), (x + w, y + h), color, 2)
-                    cv2.putText(cv_image, label, (x, y + 30), font, 3, color, 3)
+                    if (GUI_ENABLED):
+                        cv2.rectangle(cv_image, (x, y), (x + w, y + h), color, 2)
+                        cv2.putText(cv_image, label, (x, y + 30), font, 3, color, 3)
 
-                    # Detect a dog
+                    # Store the last detected person's center location on thd horizontal axis
                     if(label == "person"):
                         center_x = (x+w/2)
 
@@ -117,13 +120,17 @@ def main():
             new_img_available = False
 
             # Show the image in the window we created before the while-loop
-            cv2.imshow('ai_debug_win', cv_image)
+            if (GUI_ENABLED):
+                cv2.imshow('ai_debug_win', cv_image)
+
         # Show the image for 1 ms.
-        if (cv2.waitKey(1) == 27):
-            break # Exit if esc pressed
+        if (GUI_ENABLED):
+            if (cv2.waitKey(1) == 27):
+                break # Exit if esc pressed
 
     # Close nicely
-    cv2.destroyAllWindows()
+    if (GUI_ENABLED):
+        cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
