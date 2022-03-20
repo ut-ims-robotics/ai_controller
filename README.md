@@ -10,6 +10,6 @@ A catkin package for controlling a ROS robot using AI (e.g. Darknet &amp; YOLOv3
  - Open terminal window:</br>
 
         roslaunch ai_controller ai_controller.launch
- - To check the Twist messages with angular position of object "person" published:
+ - To check the Twist messages with angular position of object "person" published in new terminal window:
  
         rostopic echo cmd_vel
