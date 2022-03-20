@@ -8,10 +8,11 @@ import cv2
 import numpy as np
 import math
 
-GUI_ENABLED = False
+GUI_ENABLED = True
 
 # Create the bridge that allows us to take Image type messages and convert them to OpenCV image format
 bridge = cv_bridge.core.CvBridge()
+
 
 # Create a boolean to keep track of whether we have a new image available or not
 new_img_available = False
@@ -113,7 +114,7 @@ def main():
                 print("Object center_x: ", center_x, width)
                 cmd_vel_msg = Twist()
                 cmd_vel_msg.angular.z = (width/2 - center_x) * math.pi / width
-	        cmd_vel_pub.publish(cmd_vel_msg)
+                cmd_vel_pub.publish(cmd_vel_msg)
 
 
             # Set the boolean to False, indicating that we have used up the camera image
