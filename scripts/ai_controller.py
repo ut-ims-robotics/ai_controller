@@ -54,6 +54,7 @@ def main():
     with open(pkgpath + "/resources/coco.names", "r") as f:
         classes = [line.strip() for line in f.readlines()]
     layer_names = net.getLayerNames()
+    
     output_layers = [layer_names[i[0] - 1] for i in net.getUnconnectedOutLayers()]
     colors = np.random.uniform(0, 255, size=(len(classes), 3))
 
@@ -83,8 +84,10 @@ def main():
                         # Object detected
                         center_x = int(detection[0] * width)
                         center_y = int(detection[1] * height)
+                        main_area = width*height
                         w = int(detection[2] * width)
                         h = int(detection[3] * height)
+                        area = w*h
                         # Rectangle coordinates
                         x = int(center_x - w / 2)
                         y = int(center_y - h / 2)
@@ -96,26 +99,35 @@ def main():
             font = cv2.FONT_HERSHEY_PLAIN
 
             center_x = None
+            label = ''
             for i in range(len(boxes)):
                 if i in indexes:
-                    x, y, w, h = boxes[i]
-                    label = str(classes[class_ids[i]])
-                    color = colors[i]
-                    if (GUI_ENABLED):
-                        cv2.rectangle(cv_image, (x, y), (x + w, y + h), color, 2)
-                        cv2.putText(cv_image, label, (x, y + 30), font, 3, color, 3)
+                    if label != 'person':
+                        x, y, w, h = boxes[i]
+                        label = str(classes[class_ids[i]])
+                        color = colors[i]
+                        if (GUI_ENABLED):
+                            cv2.rectangle(cv_image, (x, y), (x + w, y + h), color, 2)
+                            cv2.putText(cv_image, label, (x, y + 30), font, 3, color, 3)
 
-                    # Store the last detected person's center location on thd horizontal axis
-                    if(label == "person"):
-                        center_x = (x+w/2)
+                        # Store the last detected person's center location on thd horizontal axis
+                        if(label == "person"):
+                            #print(width, w)
+                            ratio = w/h
+                            if ratio <= 0.7:
+                                center_x = (x+w/2)
 
             if (center_x != None):
                 #Driving logic: keep object at the center of the screen
-                print("Object center_x: ", center_x, width)
+                #print("Object center_x: ", center_x, width)
                 cmd_vel_msg = Twist()
+                if area not in range (int(main_area/11), int(main_area/10)):
+                    if area < int(main_area/11):
+                        cmd_vel_msg.linear.x = (int(main_area/11) - area) * math.pi / int(main_area/11)
+                    elif area > int(main_area/10):
+                        cmd_vel_msg.linear.x = (int(main_area/10) - area) * math.pi / int(main_area/10)
                 cmd_vel_msg.angular.z = (width/2 - center_x) * math.pi / width
                 cmd_vel_pub.publish(cmd_vel_msg)
-
 
             # Set the boolean to False, indicating that we have used up the camera image
             new_img_available = False

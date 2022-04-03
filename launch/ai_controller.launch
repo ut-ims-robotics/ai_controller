@@ -2,7 +2,7 @@
 <launch>
     <node pkg="ai_controller" name="ai_controller" type="ai_controller.py" output="screen">
       <!--remap from="image_raw" to="/usb_cam/image_raw" /-->
-      <!--remap from="image_raw" to="/camera/color/image_raw" /-->
+      <remap from="image_raw" to="/camera/color/image_raw" />
       <!--remap from="cmd_vel" to="/robotont/cmd_vel" /-->
     </node>
 </launch>
