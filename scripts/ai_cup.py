@@ -82,23 +82,15 @@ def main():
                     confidence = scores[class_id]
                     if confidence > 0.5:
                         # Object detected
-                        #print(class_id)
                         center_x = int(detection[0] * width)
                         center_y = int(detection[1] * height)
-                        #print("Centers x, y: ", center_x, center_y)
                         main_area = width*height
-                        print("Main area: ", main_area)
                         w = int(detection[2] * width)
                         h = int(detection[3] * height)
-                        print(w/h)
                         area = w*h
-                        print("Area: ", area)
-                        if area in range (int(main_area/12), int(main_area/11)):
-                            print('Yes')
                         # Rectangle coordinates
                         x = int(center_x - w / 2)
                         y = int(center_y - h / 2)
-                        #print("X, y: ", x, y)
                         boxes.append([x, y, w, h])
                         confidences.append(float(confidence))
                         class_ids.append(class_id)
@@ -120,18 +112,20 @@ def main():
 
                         # Store the last detected cup's center location on thd horizontal axis
                         if(label == "cup"):
-                            #new_img_available = False
-                            center_x = (x+w/2)
+                            #print(width, w)
+                            ratio = w/h
+                            if ratio <= 0.7:
+                                center_x = (x+w/2)
 
             if (center_x != None):
                 #Driving logic: keep object at the center of the screen
                 #print("Object center_x: ", center_x, width)
                 cmd_vel_msg = Twist()
-                if area not in range (int(main_area/12), int(main_area/11)):
-                    if area < int(main_area/12):
-                        cmd_vel_msg.linear.x = (int(main_area/12) - area) * math.pi / int(main_area/12)
-                    elif area > int(main_area/11):
-                        cmd_vel_msg.linear.x = (int(main_area/11) - area) * math.pi / int(main_area/11)
+                if area not in range (int(main_area/rospy.get_param("area_lower_boundary_coef")), int(main_area/rospy.get_param("area_upper_boundary_coef"))):
+                    if area < int(main_area/rospy.get_param("area_lower_boundary_coef")):
+                        cmd_vel_msg.linear.x = (int(main_area/rospy.get_param("area_lower_boundary_coef")) - area) * 2.7 / int(main_area/rospy.get_param("area_lower_boundary_coef"))
+                    elif area > int(main_area/rospy.get_param("area_upper_boundary_coef")):
+                        cmd_vel_msg.linear.x = (int(main_area/rospy.get_param("area_upper_boundary_coef")) - area) * 2.7 / int(main_area/rospy.get_param("area_upper_boundary_coef"))
                 cmd_vel_msg.angular.z = (width/2 - center_x) * math.pi / width
                 cmd_vel_pub.publish(cmd_vel_msg)
 

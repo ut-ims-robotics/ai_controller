@@ -9,8 +9,6 @@ import numpy as np
 import math
 
 GUI_ENABLED = True
-#rospy.set_param('area_lower_boundary_coef', 11)
-#rospy.set_param('area_upper_boundary_coef', 10)
 
 # Create the bridge that allows us to take Image type messages and convert them to OpenCV image format
 bridge = cv_bridge.core.CvBridge()
