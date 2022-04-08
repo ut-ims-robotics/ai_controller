@@ -6,7 +6,7 @@ A catkin package for controlling a ROS robot using AI (e.g. Darknet &amp; YOLOv3
  - Inside the package navigate to the branch `noetic-devel`:</br>
  
         git checkout noetic-devel
- - In `/ai_controller/launch/ai_controller.launch` uncomment line 5: `<remap from="image_raw" to="/camera/color/image_raw" />`and save changes and set up the right parameters for zero position of robot (lower and upper boundaries of detected area relatively to the whole area)
+ - In `/ai_controller/launch/ai_controller.launch` uncomment line 5: `<remap from="image_raw" to="/camera/color/image_raw" />`and set up the right parameters for zero position of robot (lower and upper boundaries of detected area relatively to the whole area), save changes
  - Open terminal window:</br>
 
         roslaunch ai_controller ai_controller.launch
