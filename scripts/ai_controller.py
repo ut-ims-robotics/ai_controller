@@ -9,6 +9,8 @@ import numpy as np
 import math
 
 GUI_ENABLED = True
+#rospy.set_param('area_lower_boundary_coef', 11)
+#rospy.set_param('area_upper_boundary_coef', 10)
 
 # Create the bridge that allows us to take Image type messages and convert them to OpenCV image format
 bridge = cv_bridge.core.CvBridge()
@@ -121,11 +123,11 @@ def main():
                 #Driving logic: keep object at the center of the screen
                 #print("Object center_x: ", center_x, width)
                 cmd_vel_msg = Twist()
-                if area not in range (int(main_area/11), int(main_area/10)):
-                    if area < int(main_area/11):
-                        cmd_vel_msg.linear.x = (int(main_area/11) - area) * math.pi / int(main_area/11)
-                    elif area > int(main_area/10):
-                        cmd_vel_msg.linear.x = (int(main_area/10) - area) * math.pi / int(main_area/10)
+                if area not in range (int(main_area/rospy.get_param("area_lower_boundary_coef")), int(main_area/rospy.get_param("area_upper_boundary_coef"))):
+                    if area < int(main_area/rospy.get_param("area_lower_boundary_coef")):
+                        cmd_vel_msg.linear.x = (int(main_area/rospy.get_param("area_lower_boundary_coef")) - area) * 2.7 / int(main_area/rospy.get_param("area_lower_boundary_coef"))
+                    elif area > int(main_area/rospy.get_param("area_upper_boundary_coef")):
+                        cmd_vel_msg.linear.x = (int(main_area/rospy.get_param("area_upper_boundary_coef")) - area) * 2.7 / int(main_area/rospy.get_param("area_upper_boundary_coef"))
                 cmd_vel_msg.angular.z = (width/2 - center_x) * math.pi / width
                 cmd_vel_pub.publish(cmd_vel_msg)
 
